@@ -1,0 +1,62 @@
+.todo {
+  padding: 0.5rem;
+  border: 1px solid var(--black);
+  border-radius: 0.25rem;
+}
+
+.todo_title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+
+  /* ellipses */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.todo_photo {
+  width: 100%;
+}
+
+.todo_location {
+  color: var(--text-secondary);
+  margin: 1rem 0;
+
+  /* ellipsed on paragraph */
+  /* display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden; */
+
+  /* easiest way of having the checkbox below always at the same position. */
+  /* flexbox on `todo` broke the title's ellipses. */
+  /* position absolute on `checkbox` had a horitonzal offset to the right. */
+  /* height: 2.25rem; */
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.modal-wrapper {
+  position: fixed;
+  background: white;
+  width: 80%;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.display-block {
+  display: block;
+}
+
+.display-none {
+  display: none;
+}

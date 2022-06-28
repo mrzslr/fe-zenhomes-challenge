@@ -1,0 +1,20 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.25rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--primary);
+}
+
+.header-sort_label {
+  margin-right: 0.5rem;
+}
+
+.header-sort_select {
+  margin-right: 2rem;
+}
+
+.header-toggle_label {
+  margin-right: 0.5rem;
+}

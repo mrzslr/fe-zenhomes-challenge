@@ -1,0 +1,18 @@
+:root {
+  --black: rgb(33, 37, 41);
+  --primary: #07f;
+  --text-secondary: #4d658a;
+}
+
+.app {
+  font-family: sans-serif;
+  text-align: center;
+  padding: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 1rem;
+  row-gap: 1rem;
+}
