@@ -7,11 +7,11 @@ var config = require("./config.json");
 const getSortingStrategy = ({ sortValue }) => {
   switch (sortValue) {
     case "title":
-      return (todos) => todos.sort((a, b) => a.title.localeCompare(b.title));
+      return (todos) => todos.sort((a, b) => a.name.title.localeCompare(b.name.title));
     case "completed":
-      return (todos) => todos.sort((a, b) => a.completed - b.completed);
+      return (todos) => todos.sort((a, b) => (b.completed | false) - (a.completed | false));
     default:
-      return (todos) => todos.sort((a, b) => a.id - b.id);
+      return (todos) => todos.sort((a, b) => a.id.value - b.id.value);
   }
 };
 
@@ -30,6 +30,13 @@ export default function App() {
     return getSortingStrategy({ sortValue })(todos);
   }, [todos, sortValue]);
 
+  const onTodoCompletedCheckboxClicked = (idx) => {
+    setTodos((curr) => {
+      return curr.map((item, i) =>
+        i === idx ? { ...item, completed: !item.completed } : item
+      );
+    });
+  }
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -45,7 +52,7 @@ export default function App() {
         data={data}
         config={config}
         sortValue={sortValue}
-        onSortChange={setSortValue}
+        onSortChange={(value) => setSortValue(value)}
         onToggleAll={(areAllTodosCompleted) => {
           setTodos(
             todos.map((todo) => ({
@@ -63,13 +70,7 @@ export default function App() {
             todo={todo}
             config={config}
             isCompleted={todo.completed}
-            onChange={() => {
-              setTodos((curr) => {
-                return curr.map((item, i) =>
-                  i === idx ? { ...item, completed: !item.completed } : item
-                );
-              });
-            }}
+            onChange={() => onTodoCompletedCheckboxClicked(idx)}
           />
         ))}
       </div>
