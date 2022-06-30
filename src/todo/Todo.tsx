@@ -1,6 +1,6 @@
 import React from "react";
 import useGetTodos from "./hooks/useGetTodos";
-import TodoList from "./components/TodoList";
+import TodoItem from "./components/TodoItem";
 import Header from './components/Header';
 import "./Todo.css";
 import { SortValue } from "./model/SortValue";
@@ -72,7 +72,7 @@ const Todo: React.FC = () => {
 
       <div className="grid">
         {sortedTodos.map((todo, idx) => (
-          <TodoList
+          <TodoItem
             key={todo.login.uuid}
             todo={todo}
             isCompleted={todo.completed}

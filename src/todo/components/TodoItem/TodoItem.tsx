@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import "./TodoList.css";
+import "./TodoItem.css";
 import LazyImage from '../../../shared/components/LazyImage';
 import TodoModal from "../TodoModal";
 import {Todo as TodoObject, Location} from '../../model/Todo';
