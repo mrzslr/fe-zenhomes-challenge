@@ -10,7 +10,7 @@ export const Header = ({
   onSortChange
 }) => {
   const completedTodosCount = todos.filter((todo) => todo.completed).length;
-  const areAllTodosCompleted = completedTodosCount === data?.length;
+  const areAllTodosCompleted = completedTodosCount === data?.results.length;
 
   const onChangeHandler = (event) => {
     onSortChange(event.target.value);
