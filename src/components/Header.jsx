@@ -14,7 +14,6 @@ export const Header = ({
 
   const onChangeHandler = (event) => {
     onSortChange(event.target.value);
-    config.sorted = true;
   };
 
   return (
@@ -30,7 +29,8 @@ export const Header = ({
           value={sortValue}
           onChange={(event) => onChangeHandler(event)}
         >
-          <option value="">default</option>
+          <option value="">Default</option>
+          <option value="title">Title</option>
           <option value="completed">Completed</option>
         </select>
 
