@@ -1,125 +1,87 @@
-import React, { useMemo } from "react";
+import React from "react";
+import useGetTodos from "./hooks/useGetTodos";
+import TodoList from "./components/TodoList";
+import Header from './components/Header';
 import "./Todo.css";
-import LazyImage from '../shared/components/LazyImage'
-const Todo = ({ todo, onChange, config, isCompleted }) => {
-  const [showModal, setShownModal] = React.useState(false);
-  const [completed, setCompleted] = React.useState(false);
-  const showHideClassName = showModal
-    ? "modal display-block"
-    : "modal display-none";
+var config = require("../config.json");
 
-  const handleModal = () => {
-    setShownModal(!showModal);
-  };
+const getSortingStrategy = ({ sortValue }) => {
+  switch (sortValue) {
+    case "title":
+      return (todos) => todos.sort((a, b) => a.name.title.localeCompare(b.name.title));
+    case "completed":
+      return (todos) => todos.sort((a, b) => (b.completed | false) - (a.completed | false));
+    default:
+      return (todos) => todos.sort((a, b) => a.id.value - b.id.value);
+  }
+};
 
-  const closeModal = () => {
-    setShownModal(false);
-  };
+export default function Todo() {
+  const [page, setPage] = React.useState(1);
+  const { data, error, isLoading } = useGetTodos(page);
+  const [todos, setTodos] = React.useState([]);
+  const [sortValue, setSortValue] = React.useState("");
 
   React.useEffect(() => {
-    setCompleted(isCompleted);
-  }, [isCompleted]);
+    if (!data) return;
+    const updateTodos = todos.concat(data.results);
+    setTodos(updateTodos);
+  }, [data]);
 
+  const sortedTodos = React.useMemo(() => {
+    return getSortingStrategy({ sortValue })(todos);
+  }, [todos, sortValue]);
 
-  var formattedNames = [];
+  const onTodoCompletedCheckboxClicked = (idx) => {
+    setTodos((curr) => {
+      return curr.map((item, i) =>
+        i === idx ? { ...item, completed: !item.completed } : item
+      );
+    });
+  }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  const getNames = (names) => {
-    if (names === Object(names)) {
-      // Object here
-      if (names.name != undefined && names.name != null) {
-        if (Object.keys(names.name).length > !2) {
-          for (const [key, value] of Object.entries(names.name)) {
-            formattedNames += value;
-          }
-        } else {
-          for (const [key, value] of Object.entries(names.name)) {
-            formattedNames += key + value;
-          }
-        }
-        return formattedNames;
-      } else {
-        return "No name";
-      }
-    } else if (Array.isArray(names)) {
-      if (names.name != undefined && names.name != null) {
-        if (names.name.length > !2) {
-          for (const [key, value] of Object.entries(names.name)) {
-            formattedNames += value;
-            return formattedNames;
-          }
-        } else {
-          for (const [key, value] of Object.entries(names.name)) {
-            formattedNames += key + value;
-            return formattedNames;
-          }
-        }
-      } else {
-        return "No name";
-      }
-    }
-  };
+  if (error) {
+    return <div>Error</div>;
+  }
 
-  const userName = useMemo(() => getNames(todo), []);
-
-  const getLocation = ({ location: { street, ...rest } }) => {
-    const myStreetName = street.name;
-    const myStreetNumber = street.number;
-    const myPostcode = rest.postcode;
-    const myCity = rest.city;
-    const myState = rest.state;
-    const myCountry = rest.country;
-
-    return (
-      <>
-        Address: {myStreetName + " " + myStreetNumber}
-        <br></br>
-        <br></br>
-        Postcode: {myPostcode}
-      </>
-    );
-  };
-
-  const userLocation = useMemo(() => getLocation(todo), []);
-
-  const getPicture = () => {
-    return <LazyImage src={todo.picture.large} alt={todo.picture.large} />;
-  };
-
-  const onCompletedCheckboxClicked = e => {
-    e.stopPropagation();
-    onChange();
+  const loadMore = () => {
+    setPage(page + 1);
   }
 
   return (
-    <div className="todo" onClick={handleModal}>
-      <div className="todo_title">{userName}</div>
+    <div className="app">
+      <Header
+        todos={todos}
+        data={data}
+        config={config}
+        sortValue={sortValue}
+        onSortChange={(value) => setSortValue(value)}
+        onToggleAll={(areAllTodosCompleted) => {
+          setTodos(
+            todos.map((todo) => ({
+              ...todo,
+              completed: !areAllTodosCompleted
+            }))
+          );
+        }}
+      />
 
-      <div className="todo_image">{getPicture()}</div>
-
-      <div className="todo_location">{userLocation}</div>
-
-      <div className="todo_checkbox">
-        Completed:{" "}
-        <input
-          type="checkbox"
-          checked={completed}
-          className="todo_checked"
-          onClick={onCompletedCheckboxClicked}
-          readOnly
-        />
+      <div className="grid">
+        {sortedTodos.map((todo, idx) => (
+          <TodoList
+            key={todo.login.uuid}
+            todo={todo}
+            config={config}
+            isCompleted={todo.completed}
+            onChange={() => onTodoCompletedCheckboxClicked(idx)}
+          />
+        ))}
       </div>
 
-      <div className={showHideClassName}>
-        <section className="modal-wrapper">
-          <LazyImage src={todo.picture.large} alt={todo.picture.large} />
-          <div className="todo_description">{todo.description}</div>
-          <button type="button" onClick={closeModal}>
-            Close
-          </button>
-        </section>
-      </div>
+      <button className="todo_button__loadmore" onClick={loadMore}>Load More</button>
     </div>
   );
-};
-
-export default Todo;
+}
