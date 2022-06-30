@@ -1,13 +1,13 @@
 import { useQuery } from "react-query";
 import { ApiClient } from "./api-client";
 
-export const useGetTodos = () => {
+export const useGetTodos = (page = 1) => {
   return useQuery(
-    "todos",
+    ["todos", page],
     () => {
-      console.info("server request sent.");
-      return ApiClient.get("https://randomuser.me/api/?results=40");
+      const resultsNumber = page === 1 ? 40 : 10;
+      return ApiClient.get(`https://randomuser.me/api/?results=${resultsNumber}&page=${page}`);
     },
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false, keepPreviousData: true }
   );
 };

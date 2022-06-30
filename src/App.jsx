@@ -16,14 +16,15 @@ const getSortingStrategy = ({ sortValue }) => {
 };
 
 export default function App() {
-  const { data, error, isLoading } = useGetTodos();
+  const [page, setPage] = React.useState(1);
+  const { data, error, isLoading } = useGetTodos(page);
   const [todos, setTodos] = React.useState([]);
   const [sortValue, setSortValue] = React.useState("");
 
   React.useEffect(() => {
     if (!data) return;
-
-    setTodos(data.results);
+    const updateTodos = todos.concat(data.results);
+    setTodos(updateTodos);
   }, [data]);
 
   const sortedTodos = React.useMemo(() => {
@@ -43,6 +44,10 @@ export default function App() {
 
   if (error) {
     return <div>Error</div>;
+  }
+
+  const loadMore = () => {
+    setPage(page + 1);
   }
 
   return (
@@ -74,6 +79,8 @@ export default function App() {
           />
         ))}
       </div>
+
+      <button className="todo_button__loadmore" onClick={loadMore}>Load More</button>
     </div>
   );
 }
