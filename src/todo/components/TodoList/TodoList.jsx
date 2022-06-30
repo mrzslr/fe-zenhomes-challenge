@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import "./TodoList.css";
 import LazyImage from '../../../shared/components/LazyImage';
+import TodoModal from "../TodoModal";
 const Todo = ({ todo, onChange, config, isCompleted }) => {
   const [showModal, setShownModal] = React.useState(false);
   const [completed, setCompleted] = React.useState(false);
@@ -108,16 +109,7 @@ const Todo = ({ todo, onChange, config, isCompleted }) => {
           readOnly
         />
       </div>
-
-      <div className={showHideClassName}>
-        <section className="modal-wrapper">
-          <LazyImage src={todo.picture.large} alt={todo.picture.large} />
-          <div className="todo_description">{todo.description}</div>
-          <button type="button" onClick={closeModal}>
-            Close
-          </button>
-        </section>
-      </div>
+      <TodoModal isShown={showModal} todo={todo} onClose={closeModal} />
     </div>
   );
 };
