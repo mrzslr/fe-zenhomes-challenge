@@ -1,7 +1,7 @@
 import React from "react";
 import "./Header.css";
 
-export const Header = ({
+const Header = ({
   todos,
   data,
   config,
@@ -45,3 +45,5 @@ export const Header = ({
     </div>
   );
 };
+
+export default Header;

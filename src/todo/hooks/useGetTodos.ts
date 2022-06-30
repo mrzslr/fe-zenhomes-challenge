@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
-import { ApiClient } from "./api-client";
+import { ApiClient } from "../../api/api-client";
 
-export const useGetTodos = (page = 1) => {
+const useGetTodos = (page = 1) => {
   return useQuery(
     ["todos", page],
     () => {
@@ -11,3 +11,4 @@ export const useGetTodos = (page = 1) => {
     { refetchOnWindowFocus: false, keepPreviousData: true }
   );
 };
+export default useGetTodos;

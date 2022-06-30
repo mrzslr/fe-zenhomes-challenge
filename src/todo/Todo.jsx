@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
-import { LazyImage } from ".";
 import "./Todo.css";
-
-export const Todo = ({ todo, onChange, config, isCompleted }) => {
+import LazyImage from '../shared/components/LazyImage'
+const Todo = ({ todo, onChange, config, isCompleted }) => {
   const [showModal, setShownModal] = React.useState(false);
   const [completed, setCompleted] = React.useState(false);
   const showHideClassName = showModal
@@ -122,3 +121,5 @@ export const Todo = ({ todo, onChange, config, isCompleted }) => {
     </div>
   );
 };
+
+export default Todo;

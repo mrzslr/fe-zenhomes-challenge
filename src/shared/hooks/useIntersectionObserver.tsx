@@ -1,7 +1,7 @@
 import React from "react";
 
-export const useIntersectionObserver = (options = { rootMargin: "120px" }) => {
-  const ref = React.useRef(null);
+const useIntersectionObserver = (options = { rootMargin: "120px" }) => {
+  const ref: any = React.useRef(null);
   const [isIntersected, setIsIntersected] = React.useState(false);
 
   React.useEffect(() => {
@@ -19,3 +19,5 @@ export const useIntersectionObserver = (options = { rootMargin: "120px" }) => {
 
   return { intersectionRef: ref, isIntersected };
 };
+
+export default useIntersectionObserver;

@@ -1,6 +1,7 @@
 import React from "react";
-import { useGetTodos } from "./http";
-import { Header, Todo } from "./components";
+import useGetTodos from "./todo/hooks/useGetTodos";
+import Todo from "./todo";
+import Header from './todo/components/Header';
 import "./App.css";
 var config = require("./config.json");
 
