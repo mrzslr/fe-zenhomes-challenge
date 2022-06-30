@@ -21,11 +21,6 @@ export const Todo = ({ todo, onChange, config, isCompleted }) => {
     setCompleted(isCompleted);
   }, [isCompleted]);
 
-  React.useEffect(() => {
-    if (config.sorted) {
-      setShownModal(true);
-    }
-  }, [config.sorted]);
 
   var formattedNames = [];
 
@@ -91,6 +86,11 @@ export const Todo = ({ todo, onChange, config, isCompleted }) => {
     return <LazyImage src={todo.picture.large} alt={todo.picture.large} />;
   };
 
+  const onCompletedCheckboxClicked = e => {
+    e.stopPropagation();
+    onChange();
+  }
+
   return (
     <div className="todo" onClick={handleModal}>
       <div className="todo_title">{userName}</div>
@@ -99,15 +99,16 @@ export const Todo = ({ todo, onChange, config, isCompleted }) => {
 
       <div className="todo_location">{userLocation}</div>
 
-      <span>
+      <div className="todo_checkbox">
         Completed:{" "}
         <input
           type="checkbox"
           checked={completed}
           className="todo_checked"
-          onChange={onChange}
+          onClick={onCompletedCheckboxClicked}
+          readOnly
         />
-      </span>
+      </div>
 
       <div className={showHideClassName}>
         <section className="modal-wrapper">

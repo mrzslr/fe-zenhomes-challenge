@@ -34,6 +34,10 @@
   /* height: 2.25rem; */
 }
 
+.todo_checkbox {
+  padding: 0.5rem;
+}
+
 .modal {
   position: fixed;
   top: 0;
