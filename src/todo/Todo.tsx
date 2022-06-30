@@ -1,45 +1,51 @@
-import React from "react";
+import { useEffect, useState, useMemo, FC } from 'react';
 import useGetTodos from "./hooks/useGetTodos";
 import TodoItem from "./components/TodoItem";
 import Header from './components/Header';
 import "./Todo.css";
-import { SortValue } from "./model/SortValue";
-import {Todo as TodoObject} from './model/Todo';
+import { Todo as TodoObject } from './model/Todo';
+import { getSortingStrategy } from "./utils";
 
-const getSortingStrategy = (sortValue: string) => {
-  switch (sortValue) {
-    case SortValue.Title:
-      return (todos: TodoObject[]): TodoObject[] => todos.sort((a: TodoObject, b: TodoObject) => a.name.title.localeCompare(b.name.title));
-    case SortValue.Completed:
-      return (todos: TodoObject[]): TodoObject[] => todos.sort((a: TodoObject, b: TodoObject) => +b.completed - +a.completed);
-    default:
-      return (todos: TodoObject[]): TodoObject[] => todos.sort((a: TodoObject, b: TodoObject) => +a.id.name - +b.id.name);
-  }
-};
-
-const Todo: React.FC = () => {
-  const [page, setPage] = React.useState(1);
+const Todo: FC = () => {
+  const [page, setPage] = useState(1);
+  const [todos, setTodos] = useState<TodoObject[]>([]);
+  const [sortValue, setSortValue] = useState<string>("");
   const { data, error, isLoading } = useGetTodos(page);
-  const [todos, setTodos] = React.useState<TodoObject[]>([]);
-  const [sortValue, setSortValue] = React.useState<string>("");
 
-  React.useEffect(() => {
+  const onTodoCompletedCheckboxClicked = (idx: number) => {
+    setTodos((curr: TodoObject[]) => {
+      return curr.map((item: TodoObject, i: number) =>
+        i === idx ? { ...item, completed: !item.completed } : item
+      );
+    });
+  }
+
+  const onAllTodosMarkedAsCompleted = (areAllTodosCompleted: boolean) => {
+    setTodos(
+      todos.map((todo: TodoObject) => ({
+        ...todo,
+        completed: !areAllTodosCompleted
+      }))
+    );
+  }
+
+  const onTodoSortChanged = (value: string) => {
+    setSortValue(value)
+  }
+
+  const loadMore = () => {
+    setPage(page + 1);
+  }
+
+  useEffect(() => {
     if (!data) return;
     const updateTodos: TodoObject[] = todos.concat(data.results);
     setTodos(updateTodos);
   }, [data]);
 
-  const sortedTodos: TodoObject[] = React.useMemo(() => {
+  const sortedTodos: TodoObject[] = useMemo(() => {
     return getSortingStrategy(sortValue)(todos);
   }, [todos, sortValue]);
-
-  const onTodoCompletedCheckboxClicked = (idx: number) => {
-    setTodos((curr: TodoObject[]) => {
-      return curr.map((item, i) =>
-        i === idx ? { ...item, completed: !item.completed } : item
-      );
-    });
-  }
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -49,25 +55,14 @@ const Todo: React.FC = () => {
     return <div>Error</div>;
   }
 
-  const loadMore = () => {
-    setPage(page + 1);
-  }
-
   return (
     <div className="app">
       <Header
         todos={todos}
         data={data}
         sortValue={sortValue}
-        onSortChange={(value) => setSortValue(value)}
-        onToggleAll={(areAllTodosCompleted) => {
-          setTodos(
-            todos.map((todo) => ({
-              ...todo,
-              completed: !areAllTodosCompleted
-            }))
-          );
-        }}
+        onSortChange={onTodoSortChanged}
+        onToggleAll={onAllTodosMarkedAsCompleted}
       />
 
       <div className="grid">

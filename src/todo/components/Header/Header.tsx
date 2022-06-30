@@ -1,7 +1,6 @@
 import React from "react";
 import "./Header.css";
 import {Todo, TodosResponse} from '../../model/Todo';
-import { SortValue } from "../../model/SortValue";
 
 interface Props {
   todos: Todo[];
