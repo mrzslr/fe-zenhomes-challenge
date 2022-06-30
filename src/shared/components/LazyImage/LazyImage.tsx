@@ -6,9 +6,14 @@ import useIntersectionObserver from "../../hooks/useIntersectionObserver";
  * Image needs a ratio of 1:1 to fit the SVG placeholder.
  * This could be made configurable.
  */
-const LazyImage = ({ src, alt, color = "#F3F5F7" }) => {
+interface Props {
+  src: string;
+  alt: string;
+  color?: string;
+}
+const LazyImage: React.FC<Props> = ({ src, alt, color = "#F3F5F7" }) => {
   const { intersectionRef, isIntersected } = useIntersectionObserver();
-  const url = isIntersected ? src : "";
+  const url: string = isIntersected ? src : "";
 
   return (
     <div className="lazy-image">

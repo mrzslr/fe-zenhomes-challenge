@@ -1,18 +1,27 @@
 import React from "react";
 import "./Header.css";
+import {Todo, TodosResponse} from '../../model/Todo';
+import { SortValue } from "../../model/SortValue";
 
-const Header = ({
+interface Props {
+  todos: Todo[];
+  data: TodosResponse;
+  sortValue: string;
+  onToggleAll: (areAllTodosCompleted: boolean) => void;
+  onSortChange: (sortValue: string) => void;
+}
+
+const Header: React.FC<Props> = ({
   todos,
   data,
-  config,
   onToggleAll,
   sortValue,
   onSortChange
 }) => {
-  const completedTodosCount = todos.filter((todo) => todo.completed).length;
-  const areAllTodosCompleted = completedTodosCount === data?.results.length;
+  const completedTodosCount: number = todos.filter((todo: Todo) => todo.completed).length;
+  const areAllTodosCompleted: boolean = completedTodosCount === data?.results.length;
 
-  const onChangeHandler = (event) => {
+  const onChangeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
     onSortChange(event.target.value);
   };
 

@@ -3,42 +3,44 @@ import useGetTodos from "./hooks/useGetTodos";
 import TodoList from "./components/TodoList";
 import Header from './components/Header';
 import "./Todo.css";
-var config = require("../config.json");
+import { SortValue } from "./model/SortValue";
+import {Todo as TodoObject} from './model/Todo';
 
-const getSortingStrategy = ({ sortValue }) => {
+const getSortingStrategy = (sortValue: string) => {
   switch (sortValue) {
-    case "title":
-      return (todos) => todos.sort((a, b) => a.name.title.localeCompare(b.name.title));
-    case "completed":
-      return (todos) => todos.sort((a, b) => (b.completed | false) - (a.completed | false));
+    case SortValue.Title:
+      return (todos: TodoObject[]): TodoObject[] => todos.sort((a: TodoObject, b: TodoObject) => a.name.title.localeCompare(b.name.title));
+    case SortValue.Completed:
+      return (todos: TodoObject[]): TodoObject[] => todos.sort((a: TodoObject, b: TodoObject) => +b.completed - +a.completed);
     default:
-      return (todos) => todos.sort((a, b) => a.id.value - b.id.value);
+      return (todos: TodoObject[]): TodoObject[] => todos.sort((a: TodoObject, b: TodoObject) => +a.id.name - +b.id.name);
   }
 };
 
-export default function Todo() {
+const Todo: React.FC = () => {
   const [page, setPage] = React.useState(1);
   const { data, error, isLoading } = useGetTodos(page);
-  const [todos, setTodos] = React.useState([]);
-  const [sortValue, setSortValue] = React.useState("");
+  const [todos, setTodos] = React.useState<TodoObject[]>([]);
+  const [sortValue, setSortValue] = React.useState<string>("");
 
   React.useEffect(() => {
     if (!data) return;
-    const updateTodos = todos.concat(data.results);
+    const updateTodos: TodoObject[] = todos.concat(data.results);
     setTodos(updateTodos);
   }, [data]);
 
-  const sortedTodos = React.useMemo(() => {
-    return getSortingStrategy({ sortValue })(todos);
+  const sortedTodos: TodoObject[] = React.useMemo(() => {
+    return getSortingStrategy(sortValue)(todos);
   }, [todos, sortValue]);
 
-  const onTodoCompletedCheckboxClicked = (idx) => {
-    setTodos((curr) => {
+  const onTodoCompletedCheckboxClicked = (idx: number) => {
+    setTodos((curr: TodoObject[]) => {
       return curr.map((item, i) =>
         i === idx ? { ...item, completed: !item.completed } : item
       );
     });
   }
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -56,7 +58,6 @@ export default function Todo() {
       <Header
         todos={todos}
         data={data}
-        config={config}
         sortValue={sortValue}
         onSortChange={(value) => setSortValue(value)}
         onToggleAll={(areAllTodosCompleted) => {
@@ -74,7 +75,6 @@ export default function Todo() {
           <TodoList
             key={todo.login.uuid}
             todo={todo}
-            config={config}
             isCompleted={todo.completed}
             onChange={() => onTodoCompletedCheckboxClicked(idx)}
           />
@@ -85,3 +85,5 @@ export default function Todo() {
     </div>
   );
 }
+
+export default Todo;

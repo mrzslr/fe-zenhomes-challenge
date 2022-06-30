@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-const rootElement = document.getElementById("root");
-const queryClient = new QueryClient();
+const rootElement: HTMLElement | null = document.getElementById("root");
+const queryClient: QueryClient = new QueryClient();
 
 ReactDOM.render(
   <StrictMode>

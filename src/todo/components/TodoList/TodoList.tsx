@@ -2,18 +2,23 @@ import React, { useMemo } from "react";
 import "./TodoList.css";
 import LazyImage from '../../../shared/components/LazyImage';
 import TodoModal from "../TodoModal";
-const Todo = ({ todo, onChange, config, isCompleted }) => {
+import {Todo as TodoObject, Location} from '../../model/Todo';
+
+interface Props {
+  todo: TodoObject,
+  isCompleted: boolean,
+  onChange: () => void,
+}
+
+const Todo: React.FC<Props> = ({ todo, onChange, isCompleted }) => {
   const [showModal, setShownModal] = React.useState(false);
   const [completed, setCompleted] = React.useState(false);
-  const showHideClassName = showModal
-    ? "modal display-block"
-    : "modal display-none";
 
-  const handleModal = () => {
+  const handleModal = (): void => {
     setShownModal(!showModal);
   };
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     setShownModal(false);
   };
 
@@ -22,13 +27,13 @@ const Todo = ({ todo, onChange, config, isCompleted }) => {
   }, [isCompleted]);
 
 
-  var formattedNames = [];
+  let formattedNames: any = [];
 
-  const getNames = (names) => {
+  const getNames = (names: {name: any}) => {
     if (names === Object(names)) {
       // Object here
       if (names.name != undefined && names.name != null) {
-        if (Object.keys(names.name).length > !2) {
+        if (Object.keys(names.name).length > 2) {
           for (const [key, value] of Object.entries(names.name)) {
             formattedNames += value;
           }
@@ -43,7 +48,7 @@ const Todo = ({ todo, onChange, config, isCompleted }) => {
       }
     } else if (Array.isArray(names)) {
       if (names.name != undefined && names.name != null) {
-        if (names.name.length > !2) {
+        if (names.name.length > 2) {
           for (const [key, value] of Object.entries(names.name)) {
             formattedNames += value;
             return formattedNames;
@@ -62,13 +67,16 @@ const Todo = ({ todo, onChange, config, isCompleted }) => {
 
   const userName = useMemo(() => getNames(todo), []);
 
-  const getLocation = ({ location: { street, ...rest } }) => {
-    const myStreetName = street.name;
-    const myStreetNumber = street.number;
-    const myPostcode = rest.postcode;
-    const myCity = rest.city;
-    const myState = rest.state;
-    const myCountry = rest.country;
+  interface LocationProps {
+    location: Location
+  }
+  const getLocation: React.FC<LocationProps> = ({ location }) => {
+    const myStreetName = location.street.name;
+    const myStreetNumber = location.street.number;
+    const myPostcode = location.postcode;
+    const myCity = location.city;
+    const myState = location.state;
+    const myCountry = location.country;
 
     return (
       <>
@@ -82,11 +90,11 @@ const Todo = ({ todo, onChange, config, isCompleted }) => {
 
   const userLocation = useMemo(() => getLocation(todo), []);
 
-  const getPicture = () => {
+  const getPicture = (): JSX.Element => {
     return <LazyImage src={todo.picture.large} alt={todo.picture.large} />;
   };
 
-  const onCompletedCheckboxClicked = e => {
+  const onCompletedCheckboxClicked = (e: React.FormEvent<HTMLInputElement>) => {
     e.stopPropagation();
     onChange();
   }
@@ -105,7 +113,7 @@ const Todo = ({ todo, onChange, config, isCompleted }) => {
           type="checkbox"
           checked={completed}
           className="todo_checked"
-          onClick={onCompletedCheckboxClicked}
+          onClick={(e: React.FormEvent<HTMLInputElement>) => onCompletedCheckboxClicked(e)}
           readOnly
         />
       </div>

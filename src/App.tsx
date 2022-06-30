@@ -1,10 +1,12 @@
 import "./App.css";
 import Todo from './todo';
 
-export default function App() {
+const App: React.FC = () => {
   return (
     <div className="app">
       <Todo />
     </div>
   );
 }
+
+export default App;
